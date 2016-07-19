@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 def plot_surf_stat_map(coords, faces, stat_map=None,
         elev=0, azim=0,
         cmap='jet',
@@ -10,8 +12,6 @@ def plot_surf_stat_map(coords, faces, stat_map=None,
         **kwargs):
 
     ''' Visualize results on cortical surface using matplotlib'''
-    #sns.set_style("white", {'axes.grid' : False})
-    #sns.set_context("notebook", font_scale=1.5)    
     import numpy as np
     import matplotlib.pyplot as plt
     import matplotlib.tri as tri
@@ -40,15 +40,12 @@ def plot_surf_stat_map(coords, faces, stat_map=None,
 
     fig.patch.set_facecolor('white')
     ax1 = fig.add_subplot(111, projection='3d', xlim=limits, ylim=limits)
-    ax1.view_init(elev=elev, azim=azim)
-    #ax1.set_axis_off()
+    # ax1._axis3don = False
     ax1.grid(False)
-    #ax1.set_frame_on(False)
-    #ax1.axes.get_yaxis().set_visible(False)
-    #ax1.axes.get_xaxis().set_visible(False)
-    #plt.axis('off')
-    #ax = plt.gca(projection='3d') 
-    #ax1._axis3don = False
+    ax1.set_axis_off()
+    ax1.w_zaxis.line.set_lw(0.)
+    ax1.set_zticks([])
+    ax1.view_init(elev=elev, azim=azim)
     
     # plot mesh without data
     p3dcollec = ax1.plot_trisurf(coords[:, 0], coords[:, 1], coords[:, 2],
@@ -118,11 +115,9 @@ def plot_surf_stat_map(coords, faces, stat_map=None,
                     face_colors = cmap(stat_map_faces)
 
         p3dcollec.set_facecolors(face_colors)
-
-    ax1.set_axis_off()
     
     if returnAx == True:
-        return fig, ax
+        return fig, ax1
     else:
         return fig
 
@@ -172,37 +167,40 @@ def _get_plot_stat_map_params(stat_map_data, vmax, symmetric_cbar, kwargs,
         cbar_vmin, cbar_vmax = None, None
     return cbar_vmin, cbar_vmax, vmin, vmax
 
-def showSurf(input_data, surf, sulc, cort, showall=None, output_file=None):
+def showSurf(input_data, surf, sulc, cort, showall=None, output_file=None):    
+
+    import matplotlib.pyplot as plt
+    
     f = plot_surf_stat_map(surf[0], surf[1], bg_map=sulc, mask=cort, stat_map=input_data, bg_on_stat=True, azim=0)
     plt.show()
+
     if output_file:
         count = 0
-        f.savefig(('fig.%s.' + output_file) % str(count))
+        f.savefig((output_file + '.%s.png') % str(count))
         count += 1
     f = plot_surf_stat_map(surf[0], surf[1], bg_map=sulc, mask=cort, stat_map=input_data, bg_on_stat=True, azim=180)
     plt.show()
     if output_file:
-        f.savefig(('fig.%s.' + output_file) % str(count))
+        f.savefig((output_file + '.%s.png') % str(count))
         count += 1
     if showall:
         f = plot_surf_stat_map(surf[0], surf[1], bg_map=sulc, mask=cort, stat_map=input_data, bg_on_stat=True, azim=90)
         plt.show()
         if output_file:
-            f.savefig(('fig.%s.' + output_file) % str(count))
+            f.savefig((output_file + '.%s.png') % str(count))
             count += 1
         f = plot_surf_stat_map(surf[0], surf[1], bg_map=sulc, mask=cort, stat_map=input_data, bg_on_stat=True, azim=270)
         plt.show()
         if output_file:
-            f.savefig(('fig.%s.' + output_file) % str(count))
+            f.savefig((output_file + '.%s.png') % str(count))
             count += 1
         f = plot_surf_stat_map(surf[0], surf[1], bg_map=sulc, mask=cort, stat_map=input_data, bg_on_stat=True, elev=90)
         plt.show()
         if output_file:
-            f.savefig(('fig.%s.' + output_file) % str(count))
+            f.savefig((output_file + '.%s.png') % str(count))
             count += 1
         f = plot_surf_stat_map(surf[0], surf[1], bg_map=sulc, mask=cort, stat_map=input_data, bg_on_stat=True, elev=270)
         plt.show()
         if output_file:
-            f.savefig(('fig.%s.' + output_file) % str(count))
+            f.savefig((output_file + '.%s.png') % str(count))
             count += 1
-
